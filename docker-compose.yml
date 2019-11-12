@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  php:
+    build: ./php/
+    container_name: php
+    volumes:
+      - ./www:/var/www/html/
+  apache:
+    build: ./apache/
+    container_name: www
+    ports:
+      - 80:80
+    links:
+      - php
+      - mysql
+    volumes:
+      - ./www:/var/www/html/
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    env_file:
+      - .env
+    ports:
+      - 3306:3306
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    links:
+      - mysql
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: mysql
+    env_file:
+      - .env
